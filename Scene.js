@@ -19,7 +19,7 @@ Scene.prototype.adicionar = function (sprite) {
 
 Scene.prototype.desenhar = function () {
     for (var i = 0; i < this.sprites.length; i++) {
-        if (this.sprites[i].props.tipo != "star")
+        if (this.sprites[i].props.tipo != "star" && this.sprites[i].props.tipo != "pc")
             this.sprites[i].desenhar(this.ctx);
     }
 };
@@ -28,6 +28,13 @@ Scene.prototype.desenharEstrelas = function () {
     for (var i = 0; i < this.sprites.length; i++) {
         if (this.sprites[i].props.tipo === "star")
             this.sprites[i].desenharEstrelas(this.ctx);
+    }
+};
+
+Scene.prototype.desenharPC = function () {
+    for (var i = 0; i < this.sprites.length; i++) {
+        if (this.sprites[i].props.tipo === "pc")
+            this.sprites[i].desenharPC(this.ctx, this.sprites[i].vy);
     }
 };
 
@@ -55,7 +62,7 @@ Scene.prototype.comportar = function () {
 
 
 Scene.prototype.limpar = function () {
-    this.ctx.fillStyle = "midnightblue"
+    this.ctx.fillStyle = "midnightblue";
     this.ctx.fillRect(0, 0, this.w, this.h);
 }
 
@@ -91,9 +98,10 @@ Scene.prototype.removeSprites = function () {
 Scene.prototype.passo = function (dt) {
     this.limpar();
     this.comportar();
-    this.moverEstrelas(dt);
+    //this.moverEstrelas(dt);
     this.mover(dt);
-    this.desenharEstrelas();
+    this.desenharPC();
+    //this.desenharEstrelas();
     this.desenhar();
     this.checaColisao();
     this.removeSprites();

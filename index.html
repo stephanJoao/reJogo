@@ -40,9 +40,9 @@
         }
 
         //ADICIONA PC
-        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 4.71239 });
+        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 3.14159 });
         cena1.adicionar(pc);
-        
+
         //ADICAO DE INIMIGOS
         cena1.adicionar(new Sprite({ x: 460, y: 150, w: 15, va: 2, vm: 30, color: "green", comportar: persegueSpawn(pc), props: { tipo: "npc", spawn: 0 } }));
 
@@ -121,7 +121,7 @@
                     this.vy = -220;
                 }
                 if (teclas.baixo) {
-                    this.vy = +220;
+                    this.vy = +420;
                 }
                 if (teclas.cima === teclas.baixo) {
                     this.vy = 0;
@@ -130,12 +130,12 @@
                 if (teclas.espaco && this.cooldown <= 0) {
                     var tiro = new Sprite({
                         x: this.x, y: this.y,
-                        a: this.a - 0.1 + 0.2 * Math.random(),
+                        a: 3.14159 / 2 + this.a - 0.1 + 0.2 * Math.random(),
                         vm: 240, color: "green", w: 15, h: 15,
                         props: { tipo: "tiro" }
                     });
                     this.scene.adicionar(tiro);
-                    this.cooldown = 0.3;
+                    this.cooldown = 0.1;
                 }
             }
         }
@@ -182,6 +182,7 @@
             dt = (t - anterior) / 1000;
             cena1.passo(dt);
             anterior = t;
+            ctx.fillStyle = "white";
             ctx.fillText(1 / dt, 10, 20);
             requestAnimationFrame(passo);
         }

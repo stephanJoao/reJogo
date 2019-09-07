@@ -45,25 +45,36 @@ Sprite.prototype.desenhar = function (ctx) {
     ctx.restore();
 };
 
-Sprite.prototype.desenharPC = function (ctx) {
+Sprite.prototype.desenharPC = function (ctx, vy) {
 
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
+    /*
+    var tam = 20 * Math.abs((vy * 0.01) - 2);
+
+    for (var i = 0; i < tam; i++) {
+        ctx.globalAlpha = 1 - (i * 0.02);
+        ctx.fillStyle = "rgb(255, 0 , 0)";
+        ctx.fillRect(0 - this.w / 4, 10 + i * 1.5, 0 + this.w / 2, 1);
+    }
+    */
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
 
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
-
+    ctx.globalAlpha = 1;
     ctx.beginPath();
-    ctx.moveTo(-this.w / 2, -this.h / 2);
-    ctx.lineTo(-this.w / 2, +this.h / 2);
-    ctx.lineTo(+this.w / 2, 0);
+    ctx.moveTo(0, -this.w / 2);
+    ctx.lineTo(+this.h / 2, -this.w / 4);
+    ctx.lineTo(0, +this.h / 2);
+    ctx.lineTo(-this.h / 2, -this.w / 4);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
 
     ctx.restore();
 };

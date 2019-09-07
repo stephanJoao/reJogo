@@ -9,7 +9,7 @@ function Sprite(params = {}) {
         a: 0,
         va: 0,
         vm: 0,
-        props : {},
+        props: {},
         cooldown: 0,
         color: "blue",
         imune: 0,
@@ -22,21 +22,22 @@ function Sprite(params = {}) {
 Sprite.prototype = new Sprite();
 Sprite.prototype.constructor = Sprite;
 
-Sprite.prototype.desenhar = function(ctx) {
-    
+Sprite.prototype.desenhar = function (ctx) {
+
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.strokeRect(-this.w/2, -this.h/2, this.w, this.h);
+    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
+
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
 
     ctx.beginPath();
-    ctx.moveTo(-this.w/2, -this.h/2);
-    ctx.lineTo(-this.w/2, +this.h/2);
-    ctx.lineTo(+this.w/2, 0);
+    ctx.moveTo(-this.w / 2, -this.h / 2);
+    ctx.lineTo(-this.w / 2, +this.h / 2);
+    ctx.lineTo(+this.w / 2, 0);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -44,24 +45,64 @@ Sprite.prototype.desenhar = function(ctx) {
     ctx.restore();
 };
 
-Sprite.prototype.mover = function (dt) {
-    this.a = this.a + this.va*dt;
+Sprite.prototype.desenharPC = function (ctx) {
 
-    this.vx = this.vm*Math.cos(this.a);
-    this.vy = this.vm*Math.sin(this.a);
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
+    ctx.rotate(this.a);
+    ctx.fillStyle = this.color;
 
-    this.x = this.x + this.vx*dt;
-    this.y = this.y + this.vy*dt;
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
 
-    this.cooldown = this.cooldown -dt;
+
+    ctx.beginPath();
+    ctx.moveTo(-this.w / 2, -this.h / 2);
+    ctx.lineTo(-this.w / 2, +this.h / 2);
+    ctx.lineTo(+this.w / 2, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+Sprite.prototype.desenharEstrelas = function (ctx) {
+
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.restore();
+};
+
+Sprite.prototype.moverEstrelas = function (dt) {
+
+    this.x = this.x + this.vx * dt;
+    this.y = this.y + this.vy * dt;
+    if (this.y >= 880)
+        this.y = 0;
 }
 
-Sprite.prototype.colidiuCom = function(alvo){
-    if(alvo.x+alvo.w/2 < this.x-this.w/2) return false;
-    if(alvo.x-alvo.w/2 > this.x+this.w/2) return false;
+Sprite.prototype.mover = function (dt) {
+    this.a = this.a + this.va * dt;
 
-    if(alvo.y+alvo.h/2 < this.y-this.h/2) return false;
-    if(alvo.y-alvo.h/2 > this.y+this.h/2) return false;
+    this.x = this.x + this.vx * dt;
+    this.y = this.y + this.vy * dt;
+
+    this.vx = this.vm * Math.cos(this.a);
+    this.vy = this.vm * Math.sin(this.a);
+
+    this.cooldown = this.cooldown - dt;
+}
+
+Sprite.prototype.colidiuCom = function (alvo) {
+    if (alvo.x + alvo.w / 2 < this.x - this.w / 2) return false;
+    if (alvo.x - alvo.w / 2 > this.x + this.w / 2) return false;
+
+    if (alvo.y + alvo.h / 2 < this.y - this.h / 2) return false;
+    if (alvo.y - alvo.h / 2 > this.y + this.h / 2) return false;
 
     return true;
 }

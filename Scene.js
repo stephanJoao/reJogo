@@ -105,10 +105,10 @@ Scene.prototype.removeSprites = function () {
 Scene.prototype.passo = function (dt) {
     this.limpar();
     this.comportar();
-    //this.moverEstrelas(dt);
+    this.moverEstrelas(dt);
     this.mover(dt);
     this.desenharPC();
-    //this.desenharEstrelas();
+    this.desenharEstrelas();
     this.desenhar();
     this.checaColisao();
     this.removeSprites();

@@ -70,13 +70,20 @@ Scene.prototype.checaColisao = function () {
     for (var i = 0; i < this.sprites.length; i++) {
         for (var j = i + 1; j < this.sprites.length; j++) {
             if (this.sprites[i].colidiuCom(this.sprites[j])) {
-                if (this.sprites[i].props.tipo === "pc"
-                    && this.sprites[j].props.tipo === "npc") {
-                    this.toRemove.push(this.sprites[j]);
+                if (this.sprites[i].props.tipo === "pc" && this.sprites[j].props.tipo === "npc" && this.sprites[i].imune <= 0 && this.sprites[j].imune <= 0) {
+                    if (this.sprites[j].vida == 0)
+                        this.toRemove.push(this.sprites[j]);
+                    if (this.sprites[i].vida == 0)
+                        this.toRemove.push(this.sprites[i]);
+                    else {
+                        this.sprites[i].vida--;
+                        this.sprites[j].vida--;
+                        this.sprites[i].imune = 2;
+                        this.sprites[j].imune = 2;
+                    }
                 }
                 else
-                    if (this.sprites[i].props.tipo === "npc"
-                        && this.sprites[j].props.tipo === "tiro") {
+                    if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
                         this.toRemove.push(this.sprites[i]);
                         this.toRemove.push(this.sprites[j]);
                     }

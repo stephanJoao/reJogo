@@ -40,7 +40,7 @@
         }
 
         //ADICIONA PC
-        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 3.14159 });
+        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, vida: 300, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 3.14159 });
         cena1.adicionar(pc);
 
         //ADICAO DE INIMIGOS
@@ -54,7 +54,7 @@
                 h: 20,
                 va: 2 * Math.random(),
                 vm: 40 * Math.random(),
-                color: "red", comportar: persegue2(pc), props: { tipo: "npc" }
+                color: "red", comportar: persegue(pc), props: { tipo: "npc" }
             }));
 
         }
@@ -184,6 +184,7 @@
             anterior = t;
             ctx.fillStyle = "white";
             ctx.fillText(1 / dt, 10, 20);
+            ctx.fillText(t, 10, 30);
             requestAnimationFrame(passo);
         }
 

@@ -14,6 +14,7 @@ function Sprite(params = {}) {
         color: "blue",
         imune: 0,
         atirando: 0,
+        vida: 0,
         comportar: undefined,
         scene: undefined
     }
@@ -45,7 +46,7 @@ Sprite.prototype.desenhar = function (ctx) {
     ctx.restore();
 };
 
-Sprite.prototype.desenharPC = function (ctx, vy) {
+Sprite.prototype.desenharPC = function (ctx) {
 
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -65,7 +66,8 @@ Sprite.prototype.desenharPC = function (ctx, vy) {
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
-    ctx.globalAlpha = 1;
+    if (this.imune > 0)
+        ctx.globalAlpha = Math.cos(this.imune * 7);
     ctx.beginPath();
     ctx.moveTo(0, -this.w / 2);
     ctx.lineTo(+this.h / 2, -this.w / 4);
@@ -74,7 +76,12 @@ Sprite.prototype.desenharPC = function (ctx, vy) {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    ctx.globalAlpha = 1;
 
+    //DESENHA HUD
+
+    ctx.fillStyle = 'hsl(120, 100 , 50 )';
+    ctx.fillRect(350, 800, 300, 20);
 
     ctx.restore();
 };
@@ -106,14 +113,18 @@ Sprite.prototype.mover = function (dt) {
     this.vy = this.vm * Math.sin(this.a);
 
     this.cooldown = this.cooldown - dt;
+    this.imune = this.imune - dt;
 }
 
 Sprite.prototype.colidiuCom = function (alvo) {
-    if (alvo.x + alvo.w / 2 < this.x - this.w / 2) return false;
-    if (alvo.x - alvo.w / 2 > this.x + this.w / 2) return false;
-
-    if (alvo.y + alvo.h / 2 < this.y - this.h / 2) return false;
-    if (alvo.y - alvo.h / 2 > this.y + this.h / 2) return false;
+    if (alvo.x + alvo.w / 2 < this.x - this.w / 2)
+        return false;
+    if (alvo.x - alvo.w / 2 > this.x + this.w / 2)
+        return false;
+    if (alvo.y + alvo.h / 2 < this.y - this.h / 2)
+        return false;
+    if (alvo.y - alvo.h / 2 > this.y + this.h / 2)
+        return false;
 
     return true;
 }

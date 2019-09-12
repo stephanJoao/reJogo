@@ -15,6 +15,7 @@ function Sprite(params = {}) {
         imune: 0,
         atirando: 0,
         vida: 0,
+        score: 0,
         comportar: undefined,
         scene: undefined
     }
@@ -27,12 +28,12 @@ Sprite.prototype.desenhar = function (ctx) {
 
     ctx.save();
     ctx.translate(this.x, this.y);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
     ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
 
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
 
 
     ctx.beginPath();
@@ -50,6 +51,8 @@ Sprite.prototype.desenharPC = function (ctx) {
 
     ctx.save();
     ctx.translate(this.x, this.y);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
     ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     /*
     var tam = 20 * Math.abs((vy * 0.01) - 2);
@@ -63,8 +66,6 @@ Sprite.prototype.desenharPC = function (ctx) {
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
 
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
 
     if (this.imune > 0)
         ctx.globalAlpha = Math.cos(this.imune * 7);
@@ -79,11 +80,14 @@ Sprite.prototype.desenharPC = function (ctx) {
     ctx.globalAlpha = 1;
 
     //DESENHA HUD
-
-    ctx.fillStyle = 'hsl(120, 100 , 50 )';
-    ctx.fillRect(350, 800, 300, 20);
-
+        
     ctx.restore();
+    ctx.fillStyle = "green";
+    ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(20, canvas.height - 50, 310, 30);
+
 };
 
 Sprite.prototype.desenharEstrelas = function (ctx) {

@@ -80,7 +80,7 @@ Sprite.prototype.desenharPC = function (ctx) {
     ctx.globalAlpha = 1;
 
     //DESENHA HUD
-        
+
     ctx.restore();
     ctx.fillStyle = "green";
     ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);

@@ -1,134 +1,220 @@
-function Sprite(params = {}) {
-    var exemplo = {
-        x: 0,
-        y: 0,
-        vx: 0,
-        vy: 0,
-        h: 10,
-        w: 10,
-        a: 0,
-        va: 0,
-        vm: 0,
-        props: {},
-        cooldown: 0,
-        color: "blue",
-        imune: 0,
-        atirando: 0,
-        vida: 0,
-        score: 0,
-        comportar: undefined,
-        scene: undefined
-    }
-    Object.assign(this, exemplo, params);
-}
-Sprite.prototype = new Sprite();
-Sprite.prototype.constructor = Sprite;
+<!DOCTYPE html>
+<html lang="pt">
 
-Sprite.prototype.desenhar = function (ctx) {
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 04</title>
+    <script src="Sprite.js"></script>
+    <script src="Scene.js"></script>
+</head>
 
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
-    ctx.rotate(this.a);
-    ctx.fillStyle = this.color;
+<body>
+    <canvas></canvas>
+    <script>
+        var canvas = document.querySelector("canvas");
+        canvas.width = 700;
+        canvas.height = 880;
+        var ctx = canvas.getContext("2d");
+        var teclas = {
+            esquerda: 0,
+            cima: 0,
+            direita: 0,
+            baixo: 0,
+            espaco: 0
+        }
+
+        var cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height });
+
+        var score = 0;
+        var dtInimigos = 0;
+        var tempo = 0;
+
+        //ADICIONA ESTRELAS
+        for (var k = 0; k < 400; k++) {
+            var tam = 4 * Math.random();
+            cena1.adicionar(new Sprite({
+                x: canvas.width * Math.random(),
+                y: 0,
+                h: tam,
+                w: tam,
+                vy: 200 + 300 * Math.random(),
+                color: "white", props: { tipo: "star" }
+            }));
+        }
+
+        //ADICIONA PC
+        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, vida: 300, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 3.14159 });
+        cena1.adicionar(pc);
+
+        //ADICAO DE INIMIGOS
+        cena1.adicionar(new Sprite({ x: 460, y: 150, w: 15, va: 2, vm: 30, color: "green", comportar: persegueSpawn(pc), props: { tipo: "npc", spawn: 0 } }));
+
+        for (var k = 0; k < 10; k++) {
+
+            cena1.adicionar(new Sprite({
+                x: 300 * Math.random(),
+                y: 400 * Math.random(),
+                h: 20,
+                va: 2 * Math.random(),
+                vm: 40 * Math.random(),
+                color: "red", comportar: persegue(pc), props: { tipo: "npc" }
+            }));
+
+        }
+        function persegue(alvo) {
+            return function () {
+                this.vx = 20 * Math.sign(alvo.x - this.x);
+                this.vy = 20 * Math.sign(alvo.y - this.y);
+            }
+        }
+
+        function persegue2(alvo) {
+            return function () {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx * dx + dy * dy);
+                var adj = 1.5;
+                var prod = (dx / da) * Math.cos(this.a + adj) +
+                    (dy / da) * Math.sin(this.a + adj);
+
+                this.va = 2 * (prod - 0);
+                this.vm = 30;
+            }
+        }
+
+        function persegue3(alvo) {
+            return function () {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx * dx + dy * dy);
+                var adj = 1;
+                var prod = (dx / da) * Math.cos(this.a + adj) +
+                    (dy / da) * Math.sin(this.a + adj);
+
+                this.va = 2 * (prod - 0);
+                this.vm = 530;
+            }
+        }
+
+        function persegueSpawn(alvo) {
+            return function () {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx * dx + dy * dy);
+                var adj = 1.5;
+                var prod = (dx / da) * Math.cos(this.a + adj) +
+                    (dy / da) * Math.sin(this.a + adj);
+
+                this.va = 2 * (prod - 0);
+                this.props.spawn -= (1 / 60);
+                if (this.props.spawn <= 0) {
+                    this.props.spawn = 2;
+                    var novo = new Sprite({
+                        x: this.x, y: this.y,
+                        vm: 100 * Math.random(),
+                        props: { tipo: "npc" },
+                        comportar: persegue2(alvo)
+                    });
+                    this.scene.adicionar(novo);
+                }
+                //this.vm = 30;
+            }
+        }
+        //ACABA ADICAO DE INIMIGOS
+
+        function porTeclasDirecionais(teclas) {
+            return function () {
+                if (teclas.esquerda && this.x > 25) {
+                    this.vx = -320;
+                }
+                if (teclas.direita && this.x < canvas.width - 25) {
+                    this.vx = +320;
+                }
+                if (teclas.esquerda === teclas.direita) {
+                    this.vx = 0;
+                }
+                if (teclas.cima && this.y > 30) {
+                    this.vy = -220;
+                }
+                if (teclas.baixo && this.y < canvas.height - 80) {
+                    this.vy = +420;
+                }
+                if (teclas.cima === teclas.baixo) {
+                    this.vy = 0;
+                }
+
+                if (teclas.espaco && this.cooldown <= 0) {
+                    var tiro = new Sprite({
+                        x: this.x, y: this.y,
+                        a: 3.14159 / 2 + this.a - 0.1 + 0.2 * Math.random(),
+                        vm: 240, color: "green", w: 15, h: 15,
+                        props: { tipo: "tiro" }
+                    });
+                    this.scene.adicionar(tiro);
+                    this.cooldown = 0.1;
+                }
+            }
+        }
+        addEventListener("keydown", function (e) {
+            switch (e.keyCode) {
+                case 32:
+                    teclas.espaco = 1;
+                    break;
+                case 37:
+                    teclas.esquerda = 1;
+                    break;
+                case 38:
+                    teclas.cima = 1;
+                    break;
+                case 39:
+                    teclas.direita = 1;
+                    break;
+                case 40:
+                    teclas.baixo = 1;
+                    break;
+            }
+        });
+        addEventListener("keyup", function (e) {
+            switch (e.keyCode) {
+                case 32:
+                    teclas.espaco = 0;
+                    break;
+                case 37:
+                    teclas.esquerda = 0;
+                    break;
+                case 38:
+                    teclas.cima = 0;
+                    break;
+                case 39:
+                    teclas.direita = 0;
+                    break;
+                case 40:
+                    teclas.baixo = 0;
+                    break;
+            }
+        });
+
+        function passo(t) {
+            dt = (t - anterior) / 1000;
+            dtInimigos = dtInimigos - dt;
+            tempo = tempo + dt;
+            cena1.passo(dt);
+            anterior = t;
+            ctx.font = "bold 12px Trebuchet";
+            ctx.fillStyle = "white";
+            ctx.fillText(1 / dt, 10, 20);
+            ctx.fillText(tempo, 10, 30);
+            ctx.fillText(dtInimigos, 10, 40);
+            ctx.fillText(score, 500, 800);
+            requestAnimationFrame(passo);
+        }
+
+        var dt, anterior = 0;
+        requestAnimationFrame(passo);
 
 
+    </script>
+</body>
 
-    ctx.beginPath();
-    ctx.moveTo(-this.w / 2, -this.h / 2);
-    ctx.lineTo(-this.w / 2, +this.h / 2);
-    ctx.lineTo(+this.w / 2, 0);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.restore();
-};
-
-Sprite.prototype.desenharPC = function (ctx) {
-
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
-    /*
-    var tam = 20 * Math.abs((vy * 0.01) - 2);
-
-    for (var i = 0; i < tam; i++) {
-        ctx.globalAlpha = 1 - (i * 0.02);
-        ctx.fillStyle = "rgb(255, 0 , 0)";
-        ctx.fillRect(0 - this.w / 4, 10 + i * 1.5, 0 + this.w / 2, 1);
-    }
-    */
-    ctx.rotate(this.a);
-    ctx.fillStyle = this.color;
-
-
-    if (this.imune > 0)
-        ctx.globalAlpha = Math.cos(this.imune * 7);
-    ctx.beginPath();
-    ctx.moveTo(0, -this.w / 2);
-    ctx.lineTo(+this.h / 2, -this.w / 4);
-    ctx.lineTo(0, +this.h / 2);
-    ctx.lineTo(-this.h / 2, -this.w / 4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-
-    //DESENHA HUD
-
-    ctx.restore();
-    ctx.fillStyle = "green";
-    ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(20, canvas.height - 50, 310, 30);
-
-};
-
-Sprite.prototype.desenharEstrelas = function (ctx) {
-
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-    ctx.restore();
-};
-
-Sprite.prototype.moverEstrelas = function (dt) {
-
-    this.x = this.x + this.vx * dt;
-    this.y = this.y + this.vy * dt;
-    if (this.y >= 880)
-        this.y = 0;
-}
-
-Sprite.prototype.mover = function (dt) {
-    this.a = this.a + this.va * dt;
-
-    this.x = this.x + this.vx * dt;
-    this.y = this.y + this.vy * dt;
-
-    this.vx = this.vm * Math.cos(this.a);
-    this.vy = this.vm * Math.sin(this.a);
-
-    this.cooldown = this.cooldown - dt;
-    this.imune = this.imune - dt;
-}
-
-Sprite.prototype.colidiuCom = function (alvo) {
-    if (alvo.x + alvo.w / 2 < this.x - this.w / 2)
-        return false;
-    if (alvo.x - alvo.w / 2 > this.x + this.w / 2)
-        return false;
-    if (alvo.y + alvo.h / 2 < this.y - this.h / 2)
-        return false;
-    if (alvo.y - alvo.h / 2 > this.y + this.h / 2)
-        return false;
-
-    return true;
-}
+</html>

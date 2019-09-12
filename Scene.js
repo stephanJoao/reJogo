@@ -72,10 +72,9 @@ Scene.prototype.checaColisao = function () {
         for (var j = i + 1; j < this.sprites.length; j++) {
             if (this.sprites[i].colidiuCom(this.sprites[j])) {
                 if (this.sprites[i].props.tipo === "pc" && this.sprites[j].props.tipo === "npc" && this.sprites[i].imune <= 0 && this.sprites[j].imune <= 0) {
-                    if (this.sprites[j].vida == 0)
-                    {
+                    if (this.sprites[j].vida == 0) {
                         this.toRemove.push(this.sprites[j]);
-                        this.sprites[i].score = this.sprites[i].score + 10; 
+                        this.sprites[i].score = this.sprites[i].score + 10;
                     }
                     if (this.sprites[i].vida == 0)
                         this.toRemove.push(this.sprites[i]);
@@ -88,9 +87,10 @@ Scene.prototype.checaColisao = function () {
                 }
                 else
                     if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
-                        for(var k = 0; k < this.sprites.length; k++)
-                            if (this.sprites[k].props.tipo === "pc") 
-                            this.sprites[k].score = this.sprites[k].score + 10;
+                        //for (var k = 0; k < this.sprites.length; k++)
+                            //if (this.sprites[k].props.tipo === "pc")
+                            //      this.sprites[k].score = this.sprites[k].score + 10;
+                            score += 10;
                         this.toRemove.push(this.sprites[i]);
                         this.toRemove.push(this.sprites[j]);
                     }
@@ -99,21 +99,30 @@ Scene.prototype.checaColisao = function () {
     }
 };
 
-Scene.prototype.inimigos = function () { 
-    if (dtInimigos <= 0) 
-    { 
-        cena1.adicionar(new Sprite({ 
-            x: canvas.width * Math.random(), 
-            y: 0, 
-            h: 20, 
-            a: 3.14 / 2, 
-            va: 5 * Math.random(), 
-            vm: 140 * Math.random(), 
-            color: "red", 
-            comportar: persegue2(pc), 
-            props: { tipo: "npc" } })); 
-        dtInimigos = 0.1; 
-    } 
+Scene.prototype.inimigos = function () {
+    if(tempo <= 5)
+    {
+        var tO = 1 - tempo/5;
+        ctx.globalAlpha = tO; 
+        ctx.fillStyle = "white";
+        ctx.font = "155px Arial";
+        ctx.fillText("Stage 1", 180, 220, 400);
+        ctx.globalAlpha = 1;
+    }
+    else if (dtInimigos <= 0 && tempo > 5) {
+        cena1.adicionar(new Sprite({
+            x: canvas.width * Math.random(),
+            y: 0,
+            h: 20,
+            a: 3.14 / 2,
+            va: 5 * Math.random(),
+            vm: 140 * Math.random(),
+            color: "red",
+            comportar: persegue2(pc),
+            props: { tipo: "npc" }
+        }));
+        dtInimigos = 0.1;
+    }
 }
 
 Scene.prototype.removeSprites = function () {

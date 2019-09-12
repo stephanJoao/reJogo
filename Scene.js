@@ -4,7 +4,8 @@ function Scene(params) {
         toRemove: [],
         ctx: null,
         w: 300,
-        h: 300
+        h: 300,
+        t: 0,
     }
     Object.assign(this, exemplo, params);
 }
@@ -62,7 +63,7 @@ Scene.prototype.comportar = function () {
 
 
 Scene.prototype.limpar = function () {
-    this.ctx.fillStyle = "midnightblue";
+    this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.w, this.h);
 }
 
@@ -72,18 +73,24 @@ Scene.prototype.checaColisao = function () {
             if (this.sprites[i].colidiuCom(this.sprites[j])) {
                 if (this.sprites[i].props.tipo === "pc" && this.sprites[j].props.tipo === "npc" && this.sprites[i].imune <= 0 && this.sprites[j].imune <= 0) {
                     if (this.sprites[j].vida == 0)
+                    {
                         this.toRemove.push(this.sprites[j]);
+                        this.sprites[i].score = this.sprites[i].score + 10; 
+                    }
                     if (this.sprites[i].vida == 0)
                         this.toRemove.push(this.sprites[i]);
                     else {
                         this.sprites[i].vida--;
                         this.sprites[j].vida--;
-                        this.sprites[i].imune = 2;
-                        this.sprites[j].imune = 2;
+                        this.sprites[i].imune = 1.5;
+                        this.sprites[j].imune = 1.2;
                     }
                 }
                 else
                     if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
+                        for(var k = 0; k < this.sprites.length; k++)
+                            if (this.sprites[k].props.tipo === "pc") 
+                            this.sprites[k].score = this.sprites[k].score + 10;
                         this.toRemove.push(this.sprites[i]);
                         this.toRemove.push(this.sprites[j]);
                     }
@@ -91,6 +98,23 @@ Scene.prototype.checaColisao = function () {
         }
     }
 };
+
+Scene.prototype.inimigos = function () { 
+    if (dtInimigos <= 0) 
+    { 
+        cena1.adicionar(new Sprite({ 
+            x: canvas.width * Math.random(), 
+            y: 0, 
+            h: 20, 
+            a: 3.14 / 2, 
+            va: 5 * Math.random(), 
+            vm: 140 * Math.random(), 
+            color: "red", 
+            comportar: persegue2(pc), 
+            props: { tipo: "npc" } })); 
+        dtInimigos = 0.1; 
+    } 
+}
 
 Scene.prototype.removeSprites = function () {
     for (var i = 0; i < this.toRemove.length; i++) {
@@ -105,6 +129,7 @@ Scene.prototype.removeSprites = function () {
 Scene.prototype.passo = function (dt) {
     this.limpar();
     this.comportar();
+    this.inimigos();
     this.moverEstrelas(dt);
     this.mover(dt);
     this.desenharPC();

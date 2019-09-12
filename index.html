@@ -26,6 +26,8 @@
 
         var cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height });
 
+        var dtInimigos = 1;
+
         //ADICIONA ESTRELAS
         for (var k = 0; k < 400; k++) {
             var tam = 4 * Math.random();
@@ -79,6 +81,19 @@
             }
         }
 
+        function persegue3(alvo) {
+            return function () {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx * dx + dy * dy);
+                var adj = 1;
+                var prod = (dx / da) * Math.cos(this.a + adj) +
+                    (dy / da) * Math.sin(this.a + adj);
+
+                this.va = 2 * (prod - 0);
+                this.vm = 530;
+            }
+        }
 
         function persegueSpawn(alvo) {
             return function () {
@@ -108,19 +123,19 @@
 
         function porTeclasDirecionais(teclas) {
             return function () {
-                if (teclas.esquerda) {
+                if (teclas.esquerda && this.x > 25) {
                     this.vx = -320;
                 }
-                if (teclas.direita) {
+                if (teclas.direita && this.x < canvas.width - 25) {
                     this.vx = +320;
                 }
                 if (teclas.esquerda === teclas.direita) {
                     this.vx = 0;
                 }
-                if (teclas.cima) {
+                if (teclas.cima && this.y > 30) {
                     this.vy = -220;
                 }
-                if (teclas.baixo) {
+                if (teclas.baixo && this.y < canvas.height - 80) {
                     this.vy = +420;
                 }
                 if (teclas.cima === teclas.baixo) {
@@ -180,11 +195,16 @@
 
         function passo(t) {
             dt = (t - anterior) / 1000;
+            dtInimigos = dtInimigos - dt;
             cena1.passo(dt);
             anterior = t;
             ctx.fillStyle = "white";
             ctx.fillText(1 / dt, 10, 20);
             ctx.fillText(t, 10, 30);
+            ctx.fillText(dtInimigos, 10, 40);
+            ctx.font = "Trebuchet MS";
+            ctx.fontSize = "35px";
+            ctx.fillText(pc.score, 500, 800 );
             requestAnimationFrame(passo);
         }
 

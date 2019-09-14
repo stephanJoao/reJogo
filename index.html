@@ -26,7 +26,9 @@
 
         var cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height });
 
-        var dtInimigos = 1;
+        var score = 0;
+        var dtInimigos = 0;
+        var tempo = 0;
 
         //ADICIONA ESTRELAS
         for (var k = 0; k < 400; k++) {
@@ -196,15 +198,15 @@
         function passo(t) {
             dt = (t - anterior) / 1000;
             dtInimigos = dtInimigos - dt;
+            tempo = tempo + dt;
             cena1.passo(dt);
             anterior = t;
+            ctx.font = "bold 12px Trebuchet";
             ctx.fillStyle = "white";
             ctx.fillText(1 / dt, 10, 20);
-            ctx.fillText(t, 10, 30);
+            ctx.fillText(tempo, 10, 30);
             ctx.fillText(dtInimigos, 10, 40);
-            ctx.font = "Trebuchet MS";
-            ctx.fontSize = "35px";
-            ctx.fillText(pc.score, 500, 800 );
+            ctx.fillText(score, 500, 800);
             requestAnimationFrame(passo);
         }
 

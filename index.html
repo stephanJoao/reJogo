@@ -48,6 +48,7 @@
         cena1.adicionar(pc);
 
         //ADICAO DE INIMIGOS
+        /*
         cena1.adicionar(new Sprite({ x: 460, y: 150, w: 15, va: 2, vm: 30, color: "green", comportar: persegueSpawn(pc), props: { tipo: "npc", spawn: 0 } }));
 
         for (var k = 0; k < 10; k++) {
@@ -62,6 +63,7 @@
             }));
 
         }
+        */
         function persegue(alvo) {
             return function () {
                 this.vx = 20 * Math.sign(alvo.x - this.x);
@@ -79,7 +81,7 @@
                     (dy / da) * Math.sin(this.a + adj);
 
                 this.va = 2 * (prod - 0);
-                this.vm = 30;
+                this.vm = 130;
             }
         }
 
@@ -97,7 +99,45 @@
             }
         }
 
-        function persegueSpawn(alvo) {
+        function moveBasico() {
+            return function () {
+                this.a = Math.PI / 2;
+                this.vm = 130;
+            }
+        }
+
+        function persegue4(alvo) {
+            return function () {
+                if(this.y > alvo.y)
+                    this.props.atras = true;
+                moveBasico();
+                if(this.props.atras)
+                    this.comportar = persegue2(alvo);
+            }
+        }
+
+        function move_Spawn(alvo) {
+            return function () {
+                if(this.y < 300)
+                    moveBasico();
+                else 
+                    this.vm = 0;
+                this.props.spawn -= (1 / 60);
+                if (this.props.spawn <= 0) {
+                    this.props.spawn = 2;
+                    var novo = new Sprite({
+                        x: this.x, y: this.y,
+                        vm: 100 * Math.random(),
+                        props: { tipo: "npc" },
+                        comportar: persegue2(alvo)
+                    });
+                    this.scene.adicionar(novo);
+                }
+                //this.vm = 30;
+            }
+        }
+
+        function persegue_Spawn(alvo) {
             return function () {
                 var dx = alvo.x - this.x;
                 var dy = alvo.y - this.y;

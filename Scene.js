@@ -88,9 +88,9 @@ Scene.prototype.checaColisao = function () {
                 else
                     if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
                         //for (var k = 0; k < this.sprites.length; k++)
-                            //if (this.sprites[k].props.tipo === "pc")
-                            //      this.sprites[k].score = this.sprites[k].score + 10;
-                            score += 10;
+                        //if (this.sprites[k].props.tipo === "pc")
+                        //      this.sprites[k].score = this.sprites[k].score + 10;
+                        score += 10;
                         this.toRemove.push(this.sprites[i]);
                         this.toRemove.push(this.sprites[j]);
                     }
@@ -100,10 +100,9 @@ Scene.prototype.checaColisao = function () {
 };
 
 Scene.prototype.inimigos = function () {
-    if(tempo <= 5)
-    {
-        var tO = 1 - tempo/5;
-        ctx.globalAlpha = tO; 
+    if (tempo <= 5) {
+        var tO = 1 - tempo / 5;
+        ctx.globalAlpha = tO;
         ctx.fillStyle = "white";
         ctx.font = "155px Arial";
         ctx.fillText("Stage 1", 180, 220, 400);
@@ -115,13 +114,13 @@ Scene.prototype.inimigos = function () {
             y: 0,
             h: 20,
             a: 3.14 / 2,
-            va: 5 * Math.random(),
+            //va: 5 * Math.random(),
             vm: 140 * Math.random(),
             color: "red",
-            comportar: persegue2(pc),
-            props: { tipo: "npc" }
+            props: { tipo: "npc", atras: false, spawn: 2 },
+            comportar: move_Spawn(pc)
         }));
-        dtInimigos = 0.1;
+        dtInimigos = 0.8;
     }
 }
 

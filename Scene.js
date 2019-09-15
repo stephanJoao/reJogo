@@ -122,6 +122,7 @@ Scene.prototype.inimigos = function () {
             ctx.fillText("Stage 1", 180, 220, 400);
             ctx.globalAlpha = 1;
         }
+        //STAGE 1
         else if (tempo > 5 && tempo <= 65) {
             if (dtInimigos <= 0) {
                 cena1.adicionar(new Sprite({
@@ -129,13 +130,13 @@ Scene.prototype.inimigos = function () {
                     y: 0,
                     h: 10,
                     w: 25,
-                    vida: 1,
-                    color: "lightgrey",
+                    vida: 0,
+                    color: "red",
                     comportar: persegue2(pc),
                     props: { tipo: "npc" },
                     a: Math.PI / 2
                 }));
-                dtInimigos = 0.6;
+                dtInimigos = 1;
             }
             if (dtInimigos2 <= 0) {
                 cena1.adicionar(new Sprite({
@@ -144,12 +145,13 @@ Scene.prototype.inimigos = function () {
                     h: 10,
                     w: 35,
                     vida: 2,
-                    color: "orange",
+                    vm: 130,
+                    color: "orangered",
                     comportar: persegue3(pc),
                     props: { tipo: "npc" },
                     a: Math.PI / 2
                 }));
-                dtInimigos2 = 0.6;
+                dtInimigos2 = 1.2;
             }
             if (dtInimigos3 <= 0) {
                 cena1.adicionar(new Sprite({
@@ -157,7 +159,7 @@ Scene.prototype.inimigos = function () {
                     y: 31,
                     h: 15,
                     w: 30,
-                    vida: 2,
+                    vida: 1,
                     color: "blue",
                     comportar: moveBasico(),
                     props: { tipo: "npc", remover: true },
@@ -174,19 +176,59 @@ Scene.prototype.inimigos = function () {
             ctx.font = "155px Trebuchet MS";
             ctx.fillText("Stage 2", 180, 220, 400);
             ctx.globalAlpha = 1;
+            for (var i = 0; i < this.sprites.length; i++) {
+                if (this.sprites[i].props.tipo === "npc") {
+                    this.sprites[i].comportar = moveBasico();
+                    this.sprites[i].va = 0;
+                    this.sprites[i].vm = 100;
+                    this.sprites[i].props.remover = true;
+                }
+            }
         }
+        //STAGE 2
         else if (tempo > 75 && tempo <= 135) {
-            cena1.adicionar(new Sprite({
-                x: canvas.width * Math.random(),
-                y: 0,
-                h: 20,
-                a: 3.14 / 2,
-                //va: 5 * Math.random(),
-                vm: 140 * Math.random(),
-                color: "red",
-                props: { tipo: "npc", atras: false, spawn: 2 },
-                comportar: persegue_Spawn2(pc)
-            }));
+            if (dtInimigos <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 25,
+                    vida: 0,
+                    color: "red",
+                    comportar: persegue2(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos = 1.4;
+            }
+            if (dtInimigos2 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 10,
+                    w: 35,
+                    vida: 2,
+                    color: "lime",
+                    comportar: persegue_Spawn2(pc),
+                    props: { tipo: "npc", spawn: 0 },
+                    a: Math.PI / 2
+                }));
+                dtInimigos2 = 2.2;
+            }
+            if (dtInimigos3 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 35,
+                    w: 30,
+                    vida: 5,
+                    color: "orange",
+                    comportar: move_Spawn(pc),
+                    props: { tipo: "npc", remover: true, spawn: 0 },
+                    a: Math.PI / 2
+                }));
+                dtInimigos3 = 3.6;
+            }
         }
         else if (tempo > 135 && tempo <= 145) {
             var tO = 1 - tempo / 15;
@@ -195,19 +237,59 @@ Scene.prototype.inimigos = function () {
             ctx.font = "155px Trebuchet MS";
             ctx.fillText("Stage 3", 180, 220, 400);
             ctx.globalAlpha = 1;
+            for (var i = 0; i < this.sprites.length; i++) {
+                if (this.sprites[i].props.tipo === "npc") {
+                    this.sprites[i].comportar = moveBasico();
+                    this.sprites[i].va = 0;
+                    this.sprites[i].vm = 100;
+                    this.sprites[i].props.remover = true;
+                }
+            }
         }
+        //STAGE 3
         else if (tempo > 145 && tempo <= 205) {
-            cena1.adicionar(new Sprite({
-                x: canvas.width * Math.random(),
-                y: 0,
-                h: 20,
-                a: 3.14 / 2,
-                //va: 5 * Math.random(),
-                vm: 140 * Math.random(),
-                color: "red",
-                props: { tipo: "npc", atras: false, spawn: 2 },
-                comportar: persegue_Spawn2(pc)
-            }));
+            if (dtInimigos <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 15,
+                    w: 30,
+                    vida: 1,
+                    color: "blue",
+                    comportar: moveBasico(),
+                    props: { tipo: "npc", remover: true },
+                    a: Math.PI / 2
+                }));
+                dtInimigos = 1.4;
+            }
+            if (dtInimigos2 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 15,
+                    w: 30,
+                    vida: 1,
+                    color: "blue",
+                    comportar: persegue4(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos2 = 2.2;
+            }
+            if (dtInimigos3 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 35,
+                    w: 30,
+                    vida: 5,
+                    color: "orange",
+                    comportar: move_Spawn(pc),
+                    props: { tipo: "npc", remover: true, spawn: 0 },
+                    a: Math.PI / 2
+                }));
+                dtInimigos3 = 3.6;
+            }
         }
         else if (tempo > 205 && tempo <= 215) {
             var tO = 1 - tempo / 15;
@@ -216,19 +298,74 @@ Scene.prototype.inimigos = function () {
             ctx.font = "155px Trebuchet MS";
             ctx.fillText("Stage 4", 180, 220, 400);
             ctx.globalAlpha = 1;
+            for (var i = 0; i < this.sprites.length; i++) {
+                if (this.sprites[i].props.tipo === "npc") {
+                    this.sprites[i].comportar = moveBasico();
+                    this.sprites[i].va = 0;
+                    this.sprites[i].vm = 100;
+                    this.sprites[i].props.remover = true;
+                }
+            }
         }
+        //STAGE 4
         else if (tempo > 215 && tempo <= 275) {
-            cena1.adicionar(new Sprite({
-                x: canvas.width * Math.random(),
-                y: 0,
-                h: 20,
-                a: 3.14 / 2,
-                //va: 5 * Math.random(),
-                vm: 140 * Math.random(),
-                color: "red",
-                props: { tipo: "npc", atras: false, spawn: 2 },
-                comportar: persegue_Spawn2(pc)
-            }));
+            if (dtInimigos <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 35,
+                    vida: 2,
+                    vm: 130,
+                    color: "orange",
+                    comportar: persegue3(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos = 1.4;
+            }
+            if (dtInimigos2 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 10,
+                    w: 35,
+                    vida: 2,
+                    color: "lime",
+                    comportar: persegue_Spawn2(pc),
+                    props: { tipo: "npc", spawn: 0 },
+                    a: Math.PI / 2
+                }));
+                dtInimigos2 = 2.2;
+            }
+            if (dtInimigos3 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 35,
+                    w: 30,
+                    vida: 5,
+                    color: "blue",
+                    comportar: move_Spawn(pc),
+                    props: { tipo: "npc", remover: true, spawn: 0 },
+                    a: Math.PI / 2
+                }));
+                dtInimigos3 = 3.6;
+            }
+            if (dtInimigos4 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 15,
+                    w: 30,
+                    vida: 1,
+                    color: "blue",
+                    comportar: persegue4(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos4 = 2.2;
+            }
         }
         else if (tempo > 275 && tempo <= 290) {
             var tO = 1 - tempo / 15;
@@ -237,10 +374,54 @@ Scene.prototype.inimigos = function () {
             ctx.font = "155px Trebuchet MS";
             ctx.fillText("Boss Battle", 180, 220, 400);
             ctx.globalAlpha = 1;
+            for (var i = 0; i < this.sprites.length; i++) {
+                if (this.sprites[i].props.tipo === "npc") {
+                    this.sprites[i].comportar = moveBasico();
+                    this.sprites[i].va = 0;
+                    this.sprites[i].vm = 100;
+                    this.sprites[i].props.remover = true;
+                }
+            }
+        }
+        //BOSS BATTLE
+        else {
+            if (!adicionado) {
+                adicionado = true;
+                cena1.adicionar(boss);
+            }
+            if (dtInimigos2 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 35,
+                    vida: 1,
+                    vm: 180,
+                    color: "orangered",
+                    comportar: persegue3(boss),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos2 = 1.2;
+            }
+            if (dtInimigos3 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 35,
+                    vida: 1,
+                    vm: 580 + 580 * Math.random(),
+                    color: "orangered",
+                    comportar: persegue3(boss),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos3 = 1.2;
+            }
         }
     }
 }
-
 
 Scene.prototype.removeNaBorda = function () {
     for (var i = 0; i < this.sprites.length; i++) {

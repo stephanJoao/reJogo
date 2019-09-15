@@ -90,7 +90,7 @@ Sprite.prototype.desenharPC = function (ctx) {
 
     if (teclas.enter) {
         ctx.fillStyle = "green";
-        ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);
+        ctx.fillRect(25, canvas.height - 45, 3 * this.vida, 20);
         ctx.strokeStyle = "white";
         ctx.lineWidth = 3;
         ctx.strokeRect(20, canvas.height - 50, 310, 30);

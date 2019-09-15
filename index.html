@@ -48,27 +48,36 @@
             }));
         }
 
-        //ADICIONA PC
-        var pc = new Sprite({ x: canvas.width / 2, y: 800, h: 30, w: 40, vida: 300, color: "mediumvioletred", comportar: porTeclasDirecionais(teclas), props: { tipo: "pc" }, a: 3.14159 });
+        //ADICIONA PC E BOSS
+        var pc = new Sprite({
+            x: canvas.width / 2,
+            y: 800,
+            h: 30,
+            w: 40,
+            vida: 100,
+            color: "mediumvioletred",
+            comportar: porTeclasDirecionais(teclas),
+            props: { tipo: "pc" },
+            a: Math.PI
+        });
         cena1.adicionar(pc);
 
+        var adicionado = false;
+        var boss = new Sprite({
+            x: canvas.width / 2,
+            y: 0,
+            h: 60,
+            w: 80,
+            vida: 100,
+            color: "azure",
+            comportar: moveBoss(pc),
+            props: { tipo: "npc" },
+            a: Math.PI
+        });
+
+
         //ADICAO DE INIMIGOS
-        /*
-        cena1.adicionar(new Sprite({ x: 460, y: 150, w: 15, va: 2, vm: 30, color: "green", comportar: persegueSpawn(pc), props: { tipo: "npc", spawn: 0 } }));
 
-        for (var k = 0; k < 10; k++) {
-
-            cena1.adicionar(new Sprite({
-                x: 300 * Math.random(),
-                y: 400 * Math.random(),
-                h: 20,
-                va: 2 * Math.random(),
-                vm: 40 * Math.random(),
-                color: "red", comportar: persegue(pc), props: { tipo: "npc" }
-            }));
-
-        }
-        */
         function persegue(alvo) {
             return function () {
                 this.vx = 20 * Math.sign(alvo.x - this.x);
@@ -86,7 +95,7 @@
                     (dy / da) * Math.sin(this.a + adj);
 
                 this.va = 2 * (prod - 0);
-                this.vm = 130;
+                this.vm = 70;
             }
         }
 
@@ -96,11 +105,19 @@
                 var dy = alvo.y - this.y;
                 var da = Math.sqrt(dx * dx + dy * dy);
                 var adj = 1;
-                var prod = (dx / da) * Math.cos(this.a + adj) +
-                    (dy / da) * Math.sin(this.a + adj);
-
+                var prod = (dx / da) * Math.cos(this.a + adj) + (dy / da) * Math.sin(this.a + adj);
                 this.va = 2 * (prod - 0);
-                this.vm = 530;
+                //this.vm = 130;
+            }
+        }
+
+        function persegue4(alvo) {
+            return function () {
+                if (this.props.atras)
+                    this.comportar = persegue2(alvo);
+                if (this.y > alvo.y)
+                    this.props.atras = true;
+                this.vm = 130;
             }
         }
 
@@ -111,34 +128,29 @@
             }
         }
 
-        function persegue4(alvo) {
-            return function () {
-                if (this.y > alvo.y)
-                    this.props.atras = true;
-                moveBasico();
-                if (this.props.atras)
-                    this.comportar = persegue2(alvo);
-            }
-        }
-
         function move_Spawn(alvo) {
             return function () {
-                if (this.y < 300)
-                    moveBasico();
+                var limite = 130 + Math.random() * 400;
+                if (this.y < limite)
+                    this.vm = 30;
                 else
                     this.vm = 0;
                 this.props.spawn -= (1 / 60);
                 if (this.props.spawn <= 0) {
                     this.props.spawn = 2;
                     var novo = new Sprite({
-                        x: this.x, y: this.y,
+                        x: this.x,
+                        y: this.y,
+                        a: this.a,
+                        w: 25,
+                        h: 10,
+                        color: "red",
                         vm: 100 * Math.random(),
                         props: { tipo: "npc" },
                         comportar: persegue2(alvo)
                     });
                     this.scene.adicionar(novo);
                 }
-                //this.vm = 30;
             }
         }
 
@@ -181,18 +193,41 @@
                 if (this.props.spawn <= 0) {
                     this.props.spawn = 2;
                     var novo = new Sprite({
-                        x: this.x, y: this.y,
+                        x: this.x,
+                        y: this.y,
                         a: this.a,
+                        color: "lightgreen",
+                        w: 10,
+                        h: 10,
                         vm: 100 * Math.random(),
                         props: { tipo: "npc", remover: true },
                         comportar: moveBasico()
                     });
                     this.scene.adicionar(novo);
                 }
-                //this.vm = 30;
+                this.vm = 30;
             }
         }
-        //ACABA ADICAO DE INIMIGOS
+
+        function moveBoss(alvo) {
+            return function () {
+                if (this.y < 130) {
+                    this.a = Math.PI / 2;
+                    this.vm = 30;
+                }
+                else {
+                    this.vm = 0;
+                    var dx = alvo.x - this.x;
+                    var dy = alvo.y - this.y;
+                    var da = Math.sqrt(dx * dx + dy * dy);
+                    var adj = 1.5;
+                    var prod = (dx / da) * Math.cos(this.a + adj) + (dy / da) * Math.sin(this.a + adj);
+                    this.va = 2 * (prod - 0);
+                }
+
+            }
+        }
+        //ACABA ADICAO DE FUNCOES DE INIMIGOS
 
         function porTeclasDirecionais(teclas) {
             return function () {
@@ -218,17 +253,20 @@
                 if (teclas.espaco && this.cooldown <= 0) {
                     var tiro = new Sprite({
                         x: this.x, y: this.y,
-                        a: 3.14159 / 2 + this.a - 0.1 + 0.2 * Math.random(),
-                        vm: 240, color: "green", w: 15, h: 15,
-                        props: { tipo: "tiro" }
+                        a: Math.PI / 2 + this.a - 0.1 + 0.2 * Math.random(),
+                        vm: 440,
+                        color: "lightblue",
+                        w: 15,
+                        h: 15,
+                        props: { tipo: "tiro", remover: true }
                     });
                     this.scene.adicionar(tiro);
-                    this.cooldown = 0.1;
+                    this.cooldown = 0.4;
                 }
 
                 if (teclas.shift && this.escudoCD <= 0) {
-                    this.escudoDuracao = 20;
-                    this.escudoCD = 3;
+                    this.escudoDuracao = 2.5;
+                    this.escudoCD = 10;
                 }
             }
         }
@@ -285,7 +323,7 @@
             dtInimigos -= dt;
             dtInimigos2 -= dt;
             dtInimigos3 -= dt;
-            //dtInimigos4 -= dt;
+            dtInimigos4 -= dt;
             tempo += dt;
             cena1.passo(dt);
             anterior = t;

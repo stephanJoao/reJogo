@@ -82,7 +82,7 @@ Scene.prototype.checaColisao = function () {
                             score += 10;
                         }
                         if (this.sprites[i].vida == 0)
-                        this.toRemove.push(this.sprites[i]);
+                            this.toRemove.push(this.sprites[i]);
                         else {
                             this.sprites[i].vida--;
                             this.sprites[j].vida--;
@@ -92,15 +92,15 @@ Scene.prototype.checaColisao = function () {
                     }
                 }
                 else
-                if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
-                    if(this.sprites[i].vida == 0) {
-                        this.toRemove.push(this.sprites[i]);
-                        score += 10;
+                    if (this.sprites[i].props.tipo === "npc" && this.sprites[j].props.tipo === "tiro") {
+                        if (this.sprites[i].vida == 0) {
+                            this.toRemove.push(this.sprites[i]);
+                            score += 10;
+                        }
+                        else
+                            this.sprites[i].vida--;
+                        this.toRemove.push(this.sprites[j]);
                     }
-                    else
-                        this.sprites[i].vida--;
-                    this.toRemove.push(this.sprites[j]);
-                }
             }
         }
     }
@@ -123,21 +123,50 @@ Scene.prototype.inimigos = function () {
             ctx.globalAlpha = 1;
         }
         else if (tempo > 5 && tempo <= 65) {
-            if(dtInimigos <= 0){
-                cena1.adicionar(new Sprite({ 
-                    x: canvas.width * Math.random(), 
-                    y: 0, 
-                    h: 10, 
-                    w: 35, 
-                    vida: 2, 
-                    color: "lightgrey", 
-                    comportar: persegue2(pc), 
-                    props: { tipo: "npc" }, 
-                    a: Math.PI / 2 
+            if (dtInimigos <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 25,
+                    vida: 1,
+                    color: "lightgrey",
+                    comportar: persegue2(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
                 }));
                 dtInimigos = 0.6;
-            }            
+            }
+            if (dtInimigos2 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 0,
+                    h: 10,
+                    w: 35,
+                    vida: 2,
+                    color: "orange",
+                    comportar: persegue3(pc),
+                    props: { tipo: "npc" },
+                    a: Math.PI / 2
+                }));
+                dtInimigos2 = 0.6;
+            }
+            if (dtInimigos3 <= 0) {
+                cena1.adicionar(new Sprite({
+                    x: canvas.width * Math.random(),
+                    y: 31,
+                    h: 15,
+                    w: 30,
+                    vida: 2,
+                    color: "blue",
+                    comportar: moveBasico(),
+                    props: { tipo: "npc", remover: true },
+                    a: Math.PI / 2
+                }));
+                dtInimigos3 = 0.6;
+            }
         }
+
         else if (tempo > 65 && tempo <= 75) {
             var tO = 1 - tempo / 15;
             ctx.globalAlpha = tO;
@@ -212,12 +241,13 @@ Scene.prototype.inimigos = function () {
     }
 }
 
-Scene.prototype.removeNaBorda = function() {
+
+Scene.prototype.removeNaBorda = function () {
     for (var i = 0; i < this.sprites.length; i++) {
         var x = this.sprites[i].x;
         var y = this.sprites[i].y;
-        if(this.sprites[i].props.remover && (x >= canvas.width - 30 || x <= 30 || y >= canvas.height - 30 || y <= 30))
-        this.toRemove.push(this.sprites[i]);
+        if (this.sprites[i].props.remover && (x >= canvas.width - 30 || x <= 30 || y >= canvas.height - 30 || y <= 30))
+            this.toRemove.push(this.sprites[i]);
     }
 }
 

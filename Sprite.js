@@ -11,6 +11,8 @@ function Sprite(params = {}) {
         vm: 0,
         props: {},
         cooldown: 0,
+        escudoCD: 0,
+        escudoDuracao: 0,
         color: "blue",
         imune: 0,
         atirando: 0,
@@ -76,17 +78,23 @@ Sprite.prototype.desenharPC = function (ctx) {
     ctx.lineTo(-this.h / 2, -this.w / 4);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
+    if (this.escudoDuracao >= 0) {
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "lightblue";
+        ctx.stroke();
+    }
     ctx.globalAlpha = 1;
+    ctx.restore();
 
     //DESENHA HUD
 
-    ctx.restore();
-    ctx.fillStyle = "green";
-    ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(20, canvas.height - 50, 310, 30);
+    if (teclas.enter) {
+        ctx.fillStyle = "green";
+        ctx.fillRect(25, canvas.height - 45, 1 * this.vida, 20);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(20, canvas.height - 50, 310, 30);
+    }
 
 };
 
@@ -116,8 +124,10 @@ Sprite.prototype.mover = function (dt) {
     this.vx = this.vm * Math.cos(this.a);
     this.vy = this.vm * Math.sin(this.a);
 
-    this.cooldown = this.cooldown - dt;
-    this.imune = this.imune - dt;
+    this.cooldown -= dt;
+    this.imune -= dt;
+    this.escudoDuracao -= dt;
+    this.escudoCD -= dt;
 }
 
 Sprite.prototype.colidiuCom = function (alvo) {

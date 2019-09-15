@@ -21,13 +21,18 @@
             cima: 0,
             direita: 0,
             baixo: 0,
-            espaco: 0
+            espaco: 0,
+            shift: 0,
+            enter: 0,
         }
 
         var cena1 = new Scene({ ctx: ctx, w: canvas.width, h: canvas.height });
 
         var score = 0;
         var dtInimigos = 0;
+        var dtInimigos2 = 0;
+        var dtInimigos3 = 0;
+        var dtInimigos4 = 0;
         var tempo = 0;
 
         //ADICIONA ESTRELAS
@@ -101,26 +106,26 @@
 
         function moveBasico() {
             return function () {
-                this.a = Math.PI / 2;
+                //this.a = Math.PI / 2;
                 this.vm = 130;
             }
         }
 
         function persegue4(alvo) {
             return function () {
-                if(this.y > alvo.y)
+                if (this.y > alvo.y)
                     this.props.atras = true;
                 moveBasico();
-                if(this.props.atras)
+                if (this.props.atras)
                     this.comportar = persegue2(alvo);
             }
         }
 
         function move_Spawn(alvo) {
             return function () {
-                if(this.y < 300)
+                if (this.y < 300)
                     moveBasico();
-                else 
+                else
                     this.vm = 0;
                 this.props.spawn -= (1 / 60);
                 if (this.props.spawn <= 0) {
@@ -161,6 +166,32 @@
                 //this.vm = 30;
             }
         }
+
+        function persegue_Spawn2(alvo) {
+            return function () {
+                var dx = alvo.x - this.x;
+                var dy = alvo.y - this.y;
+                var da = Math.sqrt(dx * dx + dy * dy);
+                var adj = 1.5;
+                var prod = (dx / da) * Math.cos(this.a + adj) +
+                    (dy / da) * Math.sin(this.a + adj);
+
+                this.va = 2 * (prod - 0);
+                this.props.spawn -= (1 / 60);
+                if (this.props.spawn <= 0) {
+                    this.props.spawn = 2;
+                    var novo = new Sprite({
+                        x: this.x, y: this.y,
+                        a: this.a,
+                        vm: 100 * Math.random(),
+                        props: { tipo: "npc", remover: true },
+                        comportar: moveBasico()
+                    });
+                    this.scene.adicionar(novo);
+                }
+                //this.vm = 30;
+            }
+        }
         //ACABA ADICAO DE INIMIGOS
 
         function porTeclasDirecionais(teclas) {
@@ -194,6 +225,11 @@
                     this.scene.adicionar(tiro);
                     this.cooldown = 0.1;
                 }
+
+                if (teclas.shift && this.escudoCD <= 0) {
+                    this.escudoDuracao = 20;
+                    this.escudoCD = 3;
+                }
             }
         }
         addEventListener("keydown", function (e) {
@@ -212,6 +248,12 @@
                     break;
                 case 40:
                     teclas.baixo = 1;
+                    break;
+                case 16:
+                    teclas.shift = 1;
+                    break;
+                case 13:
+                    teclas.enter = 1;
                     break;
             }
         });
@@ -232,13 +274,19 @@
                 case 40:
                     teclas.baixo = 0;
                     break;
+                case 16:
+                    teclas.shift = 0;
+                    break;
             }
         });
 
         function passo(t) {
             dt = (t - anterior) / 1000;
-            dtInimigos = dtInimigos - dt;
-            tempo = tempo + dt;
+            dtInimigos -= dt;
+            dtInimigos2 -= dt;
+            dtInimigos3 -= dt;
+            dtInimigos4 -= dt;
+            tempo += dt;
             cena1.passo(dt);
             anterior = t;
             ctx.font = "bold 12px Trebuchet";

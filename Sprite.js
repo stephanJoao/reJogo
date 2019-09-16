@@ -32,19 +32,16 @@ Sprite.prototype.desenhar = function (ctx) {
     ctx.translate(this.x, this.y);
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
-    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
+    //ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
-
-
-
     ctx.beginPath();
     ctx.moveTo(-this.w / 2, -this.h / 2);
     ctx.lineTo(-this.w / 2, +this.h / 2);
     ctx.lineTo(+this.w / 2, 0);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
+    //ctx.stroke();
 
     ctx.restore();
 };
@@ -55,19 +52,9 @@ Sprite.prototype.desenharPC = function (ctx) {
     ctx.translate(this.x, this.y);
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
-    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
-    /*
-    var tam = 20 * Math.abs((vy * 0.01) - 2);
-
-    for (var i = 0; i < tam; i++) {
-        ctx.globalAlpha = 1 - (i * 0.02);
-        ctx.fillStyle = "rgb(255, 0 , 0)";
-        ctx.fillRect(0 - this.w / 4, 10 + i * 1.5, 0 + this.w / 2, 1);
-    }
-    */
+    //ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
-
 
     if (this.imune > 0)
         ctx.globalAlpha = Math.cos(this.imune * 7);
@@ -88,12 +75,26 @@ Sprite.prototype.desenharPC = function (ctx) {
 
     //DESENHA HUD
 
-    if (teclas.enter) {
+    if (teclas.enter && boss.vida > 0) {
         ctx.fillStyle = "green";
         ctx.fillRect(25, canvas.height - 45, 3 * this.vida, 20);
         ctx.strokeStyle = "white";
         ctx.lineWidth = 3;
         ctx.strokeRect(20, canvas.height - 50, 310, 30);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 20px Trebuchet";
+        ctx.fillText("SCORE:", 360, canvas.height - 30, 200);
+        ctx.fillText(score, 450, canvas.height - 30, 200);
+    }
+
+    if(adicionado) {
+        if(boss.vida > 0) {
+            ctx.fillStyle = "red";
+            ctx.fillRect(canvas.width / 2 - 150, 45, boss.vida, 20);
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(canvas.width / 2 - 155, 40, 310, 30);
+        }
     }
 
 };

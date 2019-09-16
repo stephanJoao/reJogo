@@ -452,8 +452,8 @@ Scene.prototype.inimigos = function () {
                 ctx.fillStyle = "white";
                 ctx.font = "bold 50px Trebuchet";
                 ctx.fillText("You made it player!", 30, 200, 700)
-                ctx.fillText("Feel free to continue your", 30, 250, 700)
-                ctx.fillText("journey now!!!", 30, 300, 700)
+                ctx.fillText("Feel free to continue", 30, 250, 700)
+                ctx.fillText("your journey now!!!", 30, 300, 700)
                 ctx.font = "bold 20px Trebuchet";                
                 ctx.fillText("Oh! I also wanna", 30, 340, 700)
                 ctx.fillText("thank you for your time!!", 30, 360, 700)

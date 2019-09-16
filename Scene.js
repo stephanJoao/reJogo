@@ -407,7 +407,7 @@ Scene.prototype.inimigos = function () {
                         h: 10,
                         w: 35,
                         vida: 1,
-                        vm: 340,
+                        vm: 200,
                         color: "orangered",
                         comportar: persegue3(boss),
                         props: { tipo: "npc", s: 10 },

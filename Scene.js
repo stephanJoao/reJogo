@@ -407,13 +407,13 @@ Scene.prototype.inimigos = function () {
                         h: 10,
                         w: 35,
                         vida: 1,
-                        vm: 380,
+                        vm: 340,
                         color: "orangered",
                         comportar: persegue3(boss),
                         props: { tipo: "npc", s: 10 },
                         a: Math.PI / 2
                     }));
-                    dtInimigos2 = 1.2;
+                    dtInimigos2 = 1.0;
                 }
                 if (dtInimigos3 <= 0) {
                     cena1.adicionar(new Sprite({

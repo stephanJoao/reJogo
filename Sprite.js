@@ -30,9 +30,9 @@ Sprite.prototype.desenhar = function (ctx) {
 
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 1;
-    //ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
+    ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
     ctx.rotate(this.a);
     ctx.fillStyle = this.color;
     ctx.beginPath();
